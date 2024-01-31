@@ -45,7 +45,6 @@ class Rendertron {
             id = id.split("/")
             id = id[id.length - 1]
             console.log("hola")
-            await page.setGeolocation({ latitude: 19.4326, longitude: -99.1332 });
             let productos
             try {
                 let data = qs.stringify({
@@ -80,6 +79,7 @@ class Rendertron {
                 console.log(producto)
                 try {
                     let page = await browser.newPage()
+                    await page.setGeolocation({ latitude: 19.4326, longitude: -99.1332 });
                     let firstLink = `https://www.google.com//search?sca_esv=601452934&q=${producto}&tbm=shop&source=lnms`
                     firstLink = firstLink.replace(" ", "+")
                     console.log(firstLink)
