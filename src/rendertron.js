@@ -29,7 +29,7 @@ class Rendertron {
         this.config = await config_1.ConfigManager.getConfiguration();
         this.port = this.port || this.config.port;
         const browser = await puppeteer.launch({
-            args: ['--no-sandbox']
+            args: ['--no-sandbox', '--lang=es']
         });
         this.renderer = new renderer_1.Renderer(browser, this.config);
         this.app.use(koaLogger());
