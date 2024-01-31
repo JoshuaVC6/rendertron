@@ -29,7 +29,8 @@ class Rendertron {
         this.config = await config_1.ConfigManager.getConfiguration();
         this.port = this.port || this.config.port;
         const browser = await puppeteer.launch({
-            args: ['--no-sandbox', '--lang=es']
+            args: ['--no-sandbox', '--lang=es'],
+            defaultViewport: null,
         });
         this.renderer = new renderer_1.Renderer(browser, this.config);
         this.app.use(koaLogger());
@@ -44,6 +45,7 @@ class Rendertron {
             id = id.split("/")
             id = id[id.length - 1]
             console.log("hola")
+            await page.setGeolocation({ latitude: 19.4326, longitude: -99.1332 });
             let productos
             try {
                 let data = qs.stringify({
