@@ -11,9 +11,9 @@ const puppeteer = require("puppeteer");
 const url = require("url");
 const renderer_1 = require("./renderer");
 const config_1 = require("./config");
-const { Console } = require("console");
 const axios = require('axios');
 const qs = require('qs');
+const https = require("https");
 /**
  * Rendertron rendering service. This runs the server which routes rendering
  * requests through to the renderer.
@@ -73,7 +73,12 @@ class Rendertron {
             } catch (error) {
                 console.log(JSON.stringify(error))
             }
-            for (let iterador = 0; iterador < 50; iterador++) {
+            let condition = 0
+            for (let iterador = 0; iterador < 100; iterador++) {
+                let data2Splunk = {
+                    "sku": productos[iterador].result.sku,
+                    "totals": []
+                }
                 let producto = productos[iterador].result.producto
                 console.log(iterador)
                 console.log(producto)
@@ -120,14 +125,34 @@ class Rendertron {
                         }
                     } while (productArrays.length <= 4);
 
-                    console.log('Product Details:', productArrays);
                     ctx.body = productArrays;
-                    //await browser.close()
-                    //return productArrays
+                    data2Splunk.totals = productArrays
+                    console.log('Product Details:', data2Splunk);
                 } catch (e) {
                     console.log(JSON.stringify(e))
                 }
+                if (data2Splunk.totals != []) {
+                    condition++
+                    try {
+                        let splunkHeaders = {
+                            Authorization: 'Splunk 8d65bc32-1293-4b2b-a74b-dad51aa6e3cb',
+                            "Content-Type": "application/json",
+                        };
 
+                        const httpsAgent = new https.Agent({
+                            rejectUnauthorized: false,
+                        });
+
+                        const response = await axios.post('https://3.88.51.104:8088/services/collector/raw', JSON.stringify(data2Splunk), {
+                            headers: splunkHeaders,
+                            httpsAgent: httpsAgent,
+                        });
+                        console.log(response.data)
+                    } catch (error) {
+                        console.log(JSON.stringify(e))
+                    }
+                }
+                if (condition == 50) break;
             }
 
         }));

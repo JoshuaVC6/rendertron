@@ -38,6 +38,7 @@
     "koa-route": "^3.2.0",
     "koa-send": "^5.0.0",
     "koa-static": "^5.0.0",
+    "node-fetch": "^3.3.2",
     "performance-now": "^2.1.0",
     "progress-bar-element": "^2.0.1",
     "puppeteer": "^1.7.0",
